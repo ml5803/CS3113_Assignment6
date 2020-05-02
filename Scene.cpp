@@ -75,29 +75,30 @@ void DrawText(ShaderProgram* program, GLuint fontTextureID, string text,
 }
 
 void Scene::Initialize(bool isGame) {
-	state.isGame = isGame;
+	this->isGame = isGame;
 	fontTextureID = LoadTexture("./src/font.png");
 
 	// Initialize map
 	GLuint mapTextureID = LoadTexture("./src/tileset.png");
 	state.map = new Map(width, height, levelData, mapTextureID, 1.0f, 4, 2);
 
-	if (state.isGame) {
+	if (isGame) {
 		//Get initial time
 		state.startTime = time(NULL);
 
 		// Initialize player
-		Entity player(LoadTexture("./src/player.png"), 2.0f, 2.0f);
-		player.position = glm::vec3(10, -6, 0);
-		state.player = new Player(player);
+		state.player = new Player(LoadTexture("./src/player.png"));
+		state.player->position = glm::vec3(10, -7.5, 0);
 
 		// To be added =========================================================
 		// Initialize enemies
+		//Entity* enemy = new Entity(LoadTexture("./src/enemy.png"), 1.5f, 2.5f);
+		//state.enemies.push_back(enemy);
 	}
 }
 
 int Scene::Update(float deltaTime) {
-	if (state.isGame) {
+	if (isGame) {
 		// Update player
 		state.player->Update(deltaTime, state.map);
 
@@ -105,7 +106,7 @@ int Scene::Update(float deltaTime) {
 		// Update enemies 
 
 		// Winning condition: time is up
-		state.timer = 10 - (time(NULL) - state.startTime);
+		state.timer = 120 - (time(NULL) - state.startTime);
 		if (state.timer <= 0) 
 			return 1;
 		// Losing condition 
@@ -119,25 +120,31 @@ int Scene::Update(float deltaTime) {
 
 void Scene::Render(ShaderProgram *program, const string& gameState) {
 
-	if (gameState != "")
-		DrawText(program, fontTextureID, gameState, 1.0f, -0.4f, glm::vec3(4, -4, 0));
-	else
+	if (isGame)
 		DrawText(program, fontTextureID, "Timer: " + to_string(state.timer) + "s", 0.7f, -0.35f, glm::vec3(1.5, -1.5, 0));
+	else
+		DrawText(program, fontTextureID, gameState, 1.0f, -0.4f, glm::vec3(4, -4, 0));
 	
 	state.map->Render(program);
-	if (state.isGame) {
+	
+	if (isGame) {
 		state.player->Render(program);
 		// To be added =========================================================
 		// Render AI enemies
-		/*for (AI* enemy : state.enemies) {
+		for (Entity* enemy : state.enemies) {
 			enemy->Render(program);
-		}*/
+		}
 	}
 }
 
-Scene::Scene(int w, int h, unsigned int* l) : width(w), height(h), levelData(l) {}
+Scene::Scene(unsigned int* l) : levelData(l) {}
 
 Scene::~Scene() {
 	delete state.player;
 	delete state.map;
+	for (size_t i = 0; i < state.enemies.size(); ++i) {
+		delete state.enemies[i];
+	}
 }
+
+bool Scene::IsGame() const { return isGame; }

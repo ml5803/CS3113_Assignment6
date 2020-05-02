@@ -45,8 +45,6 @@ void Entity::Update(float deltaTime, Map* map, const vector<Entity*> objects)
 	CheckCollisionsX(map);
 	CheckCollisionsX(objects); // Fix if needed
 
-	movement = glm::vec3(0);
-
 	modelMatrix = glm::mat4(1.0f);
 	modelMatrix = glm::translate(modelMatrix, position);
 }

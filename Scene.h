@@ -4,7 +4,6 @@
 #include "Player.h"
 
 struct GameState {
-	bool isGame;
 	time_t startTime;
 	time_t timer = -1;
 	
@@ -18,13 +17,16 @@ public:
 	GameState state;
 	glm::mat4 viewMatrix;
 
-	Scene(int w, int h, unsigned int* l);
+	Scene(unsigned int* l);
 	~Scene();
+	bool IsGame() const;
 	void Initialize(bool isGame = false);
 	int Update(float deltaTime);
 	void Render(ShaderProgram* program, const std::string& gameState);
 private:
-	int width, height;
 	unsigned int* levelData;
+	int width = 21, height = 16;
+
+	bool isGame;
 	GLuint fontTextureID;
 };

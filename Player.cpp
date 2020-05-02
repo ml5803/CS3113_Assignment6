@@ -1,38 +1,47 @@
 #include "Player.h"
 
 Player::Player(GLuint id, float w, float h) : Entity(id, w, h) {
-	//state.player->animRight = new int[2]{ 2, 3 };
-	//state.player->animLeft = new int[2]{ 0, 1 };
-	//state.player->animIndices = state.player->animRight;
-	//state.player->animFrames = 2;
-	//state.player->animIndex = 0;
-	//state.player->animTime = 0;
-	//state.player->animCols = 2;
-	//state.player->animRows = 2;
-}
-
-Player::Player(const Entity& entity) : Entity(entity) {}
-
-void Player::Aim(bool clockwise)
-{
-	if (clockwise) rotateDegree -= 1;
-	else rotateDegree += 1;
+	animUp = new int[1]{ 0 };
+	animDown = new int[1]{ 1 };
+	animRight = new int[1]{ 2 };
+	animLeft = new int[1]{ 3 };
+	animIndices = animLeft;
+	animFrames = 1;
+	animIndex = 0;
+	animTime = 0;
+	animCols = 2;
+	animRows = 2;
 }
 
 void Player::Shoot()
 {
-	rotateDegree += 90;
+	float distance = 1.0f;
+	switch (shootDirection) {
+	case 0: // shooting up
+		movement.y = -distance;
+		break;
+	case 1: // shooting down
+		movement.y = distance;
+		break;
+	case 2: // shooting right
+		movement.x = -distance;
+		break;
+	case 3: // shooting left
+		movement.x = distance;
+		break;
+	default:
+		break;
+	}
+	/*rotateDegree += 90;
 	while (rotateDegree > 360) { rotateDegree -= 360; }
 	while (rotateDegree < 0) { rotateDegree += 360; }
 	movement = glm::vec3(cos(rotateDegree), sin(rotateDegree), 0);
-	rotateDegree -= 90;
+	rotateDegree -= 90;*/
 }
 
 void Player::Update(float deltaTime, Map* map, const std::vector<Entity*> objects)
 {
 	Entity::Update(deltaTime, map, objects);
-	float degree = rotateDegree * 0.0003;
-	modelMatrix *= glm::rotate(modelMatrix, glm::degrees(degree), glm::vec3(0.0f, 0.0f, 1.0f));
 
 	if (animIndices != NULL) {
 		if (glm::length(movement) != 0) {
@@ -56,6 +65,9 @@ void Player::Update(float deltaTime, Map* map, const std::vector<Entity*> object
 
 void Player::Render(ShaderProgram* program)  {
 	if (animIndices != NULL) {
+		float texCoords[] = { 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0 };
+		program->SetModelMatrix(modelMatrix);
+
 		DrawSpriteFromTextureAtlas(program, textureID, animIndices[animIndex]);
 		return;
 	}
