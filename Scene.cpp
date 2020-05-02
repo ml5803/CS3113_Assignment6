@@ -87,7 +87,7 @@ void Scene::Initialize(bool isGame) {
 		state.startTime = time(NULL);
 
 		// Initialize player
-		state.player = new Player(LoadTexture("./src/player.png"));
+		state.player = new Player(LoadTexture("./src/player.png"), 1.0f, 1.2f);
 		state.player->position = glm::vec3(10, -7.5, 0);
 
 		// To be added =========================================================

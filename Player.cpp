@@ -15,7 +15,7 @@ Player::Player(GLuint id, float w, float h) : Entity(id, w, h) {
 
 void Player::Shoot()
 {
-	float distance = 1.0f;
+	float distance = 3.0f;
 	switch (shootDirection) {
 	case 0: // shooting up
 		movement.y = -distance;

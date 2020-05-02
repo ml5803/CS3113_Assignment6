@@ -16,7 +16,7 @@ public:
 	int animCols = 1;
 	int animRows = 1;
 
-	Player(GLuint id, float w = 1, float h = 1);
+	Player(GLuint id, float w, float h);
 	void Shoot();
 	void Update(float deltaTime, Map* map, const std::vector<Entity*> objects = {}) override;
 	void Render(ShaderProgram* program) override;

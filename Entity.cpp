@@ -37,11 +37,18 @@ void Entity::Update(float deltaTime, Map* map, const vector<Entity*> objects)
 {
 	if (!isActive) return;
 
-	position.y += movement.y * deltaTime; // Move on Y
+	collidedTop = false;
+	collidedBottom = false;
+	collidedLeft = false;
+	collidedRight = false;
+
+	velocity = movement;
+
+	position.y += velocity.y * deltaTime; // Move on Y
 	CheckCollisionsY(map);
 	CheckCollisionsY(objects); // Fix if needed
 
-	position.x += movement.x * deltaTime; // Move on X
+	position.x += velocity.x * deltaTime; // Move on X
 	CheckCollisionsX(map);
 	CheckCollisionsX(objects); // Fix if needed
 
