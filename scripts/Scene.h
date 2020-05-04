@@ -12,7 +12,7 @@ struct GameState {
 	
 	Map* map;
 	Player* player;
-    std::vector<Bullet*> playerBullets;
+    std::vector<Bullet*> bullets;
 	std::vector<Entity*> enemies;
 };
 
@@ -27,6 +27,7 @@ public:
     
 	Scene(unsigned int* l);
 	~Scene();
+	void resetGame();
 	bool IsGame() const;
     void makePlayerBullet();
 	void Initialize(bool isGame = false);

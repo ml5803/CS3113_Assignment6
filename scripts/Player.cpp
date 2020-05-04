@@ -13,12 +13,14 @@ Player::Player(GLuint id, float w, float h) : Entity(id, w, h) {
 	animCols = 2;
 	animRows = 2;
     
+	speed = 5.0f;
+	shootDirection = 3;
     entityType = PLAYER;
 }
 
 void Player::Shoot()
 {
-	float distance = 3.0f;
+	float distance = 6.0f;
  	switch (shootDirection) {
 	case 0: // shooting up
 		movement.y = -distance;
@@ -35,11 +37,6 @@ void Player::Shoot()
 	default:
 		break;
 	}
-	/*rotateDegree += 90;
-	while (rotateDegree > 360) { rotateDegree -= 360; }
-	while (rotateDegree < 0) { rotateDegree += 360; }
-	movement = glm::vec3(cos(rotateDegree), sin(rotateDegree), 0);
-	rotateDegree -= 90;*/
 }
 
 void Player::Update(float deltaTime, Map* map, const std::vector<Entity*> objects, Entity* target)
@@ -47,15 +44,3 @@ void Player::Update(float deltaTime, Map* map, const std::vector<Entity*> object
 	Entity::Update(deltaTime, map, objects, target);
     movement = glm::vec3(0);
 }
-/*
-void Player::Render(ShaderProgram* program)  {
-	if (animIndices != NULL) {
-		float texCoords[] = { 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0 };
-		program->SetModelMatrix(modelMatrix);
-
-		DrawSpriteFromTextureAtlas(program, textureID, animIndices[animIndex]);
-		return;
-	}
-
-	Entity::Render(program);
-}*/

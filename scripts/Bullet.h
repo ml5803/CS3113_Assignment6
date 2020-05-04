@@ -4,6 +4,6 @@
 
 class Bullet : public Entity {
 public:
-    Bullet(GLuint id, float w, float h);
+    Bullet(GLuint id);
     void Update(float deltaTime, Map* map, const std::vector<Entity*> objects = {}, Entity* target = nullptr) override;
 };

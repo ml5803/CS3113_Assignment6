@@ -77,6 +77,8 @@ void Entity::Update(float deltaTime, Map* map, const vector<Entity*> objects, En
 
 void Entity::Render(ShaderProgram* program)
 {
+	if (!isActive) return;
+
 	float texCoords[] = { 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0 };
 	program->SetModelMatrix(modelMatrix);
     

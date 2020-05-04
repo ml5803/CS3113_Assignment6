@@ -7,6 +7,7 @@ public:
 	glm::vec3 movement;
 	glm::vec3 acceleration;
 	glm::vec3 velocity;
+	float speed = 1.0f;
 
 	float vertices[12];
 	float width, height;
@@ -14,9 +15,7 @@ public:
 	bool isActive = true;
 	GLuint textureID;
 	glm::mat4 modelMatrix;
-    
-    int shootDirection = 3;
-    float speed = 1;
+   
     int* animRight = NULL;
     int* animLeft = NULL;
     int* animUp = NULL;
