@@ -114,12 +114,10 @@ void ProcessInput(string& menuText) {
 					switchScene(1);
 				}
 				break;
-			/*case SDLK_SPACE:
-				if (currentScene->IsGame()) {
-					(currentScene->state).player->Shoot();
-					return;
-				}
-				break;*/
+			case SDLK_SPACE:
+				if (currentScene->IsGame())
+					(currentScene->state).player->shoot = true;
+				break;
 			}
 			break;
 		default:
@@ -147,12 +145,6 @@ void ProcessInput(string& menuText) {
 		player->shootDirection = 3;
 		player->animIndices = player->animLeft;
 	}
-	else if (keys[SDL_SCANCODE_SPACE]) {
-		player->Shoot();
-        currentScene->makePlayerBullet();
-	}
-    
-    
 }
 
 #define FIXED_TIMESTEP 0.0166666f
@@ -169,7 +161,6 @@ void Update(string& menuText) {
 		return;
 	}
 
-	// Update scene
 	while (deltaTime >= FIXED_TIMESTEP) {
 		int gameState = currentScene->Update(FIXED_TIMESTEP);
 		if (gameState == 1) {
@@ -183,23 +174,15 @@ void Update(string& menuText) {
 		}
 		deltaTime -= FIXED_TIMESTEP;
 	}
-	currentScene->Update(deltaTime);
-	accumulator = deltaTime;
 
-	// Sidescrolling
-	//viewMatrix = glm::mat4(1.0f);
-	//float pos = (currentScene->state).player->position.x;
-	//if (pos > WIDTH)
-	//	viewMatrix = glm::translate(viewMatrix, glm::vec3(-pos, LENGTH, 0));
-	//else
-	//	viewMatrix = glm::translate(viewMatrix, glm::vec3(-WIDTH, LENGTH, 0));
+	accumulator = deltaTime;
 }
 
-void Render(const string& gameState) {
+void Render(const string& menuText) {
 	glClear(GL_COLOR_BUFFER_BIT);
 	program.SetViewMatrix(viewMatrix);
 
-	currentScene->Render(&program, gameState);
+	currentScene->Render(&program, menuText);
 	SDL_GL_SwapWindow(displayWindow);
 }
 

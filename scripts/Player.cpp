@@ -13,30 +13,9 @@ Player::Player(GLuint id, float w, float h) : Entity(id, w, h) {
 	animCols = 2;
 	animRows = 2;
     
-	speed = 5.0f;
+	speed = 25.0f;
 	shootDirection = 3;
     entityType = PLAYER;
-}
-
-void Player::Shoot()
-{
-	float distance = 6.0f;
- 	switch (shootDirection) {
-	case 0: // shooting up
-		movement.y = -distance;
-		break;
-	case 1: // shooting down
-		movement.y = distance;
-		break;
-	case 2: // shooting right
-		movement.x = -distance;
-		break;
-	case 3: // shooting left
-		movement.x = distance;
-		break;
-	default:
-		break;
-	}
 }
 
 void Player::Update(float deltaTime, Map* map, const std::vector<Entity*> objects, Entity* target)

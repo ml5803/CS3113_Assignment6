@@ -6,9 +6,9 @@
 #include "Bullet.h"
 
 struct GameState {
+	time_t timer = 0;
 	time_t startTime;
-    time_t lastWaveTime;
-	time_t timer = -1;
+	time_t lastWaveTime;
 	
 	Map* map;
 	Player* player;
@@ -27,9 +27,11 @@ public:
     
 	Scene(unsigned int* l);
 	~Scene();
-	void resetGame();
 	bool IsGame() const;
-    void makePlayerBullet();
+	void resetGame();
+	void makePlayerBullet();
+	void makeEnemyBullet(Entity* enemy);
+
 	void Initialize(bool isGame = false);
 	int Update(float deltaTime);
 	void Render(ShaderProgram* program, const std::string& gameState);

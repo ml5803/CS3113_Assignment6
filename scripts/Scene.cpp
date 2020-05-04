@@ -100,15 +100,16 @@ void Scene::Initialize(bool isGame) {
         }
         
         // Test shooter
-        //state.enemies.push_back(new Enemy(LoadTexture("./src/enemy.png"), 1.0f, 1.0f));
-        //state.enemies[0]->position = glm::vec3(5,-7.5,0);
-        //state.enemies[0]->entityType = Enemy::SHOOTER;
+        /*state.enemies.push_back(new Enemy(LoadTexture("./src/enemy.png"), 1.0f, 1.0f));
+        state.enemies[0]->position = glm::vec3(5,-7.5,0);
+        state.enemies[0]->entityType = Enemy::SHOOTER;*/
     }
 }
 
 int Scene::Update(float deltaTime) {
 	if (isGame) {
 		// Update player
+		if (state.player->shoot) makePlayerBullet();
         state.player->Update(deltaTime, state.map);
 
         // Spawn new enemies every 5 seconds
@@ -142,6 +143,7 @@ int Scene::Update(float deltaTime) {
 			// Losing condition: collide with an enemy
 			if (enemy->CheckCollision(state.player)) return -1; 
 
+			if (enemy->shoot) makeEnemyBullet(enemy);
 			enemy->Update(deltaTime, state.map, state.enemies, state.player);
         }
         
@@ -157,28 +159,51 @@ int Scene::Update(float deltaTime) {
 	return 0;
 }
 
-void Scene::Render(ShaderProgram *program, const string& menuText) {
-
-	if (isGame)
-		DrawText(program, fontTextureID, "Timer: " + to_string(state.timer) + "s", 0.7f, -0.35f, glm::vec3(1.5, -1.5, 0));
-	else {
-		DrawText(program, fontTextureID, "PLANTS vs ZOMBIES?", 1.0f, -0.4f, glm::vec3(4.5, -4, 0));
-		DrawText(program, fontTextureID, menuText, 1.0f, -0.4f, glm::vec3(4, -5, 0));
-	}
+void Scene::Render(ShaderProgram* program, const string& menuText) {
 
 	state.map->Render(program);
-	
+
 	if (isGame) {
+		DrawText(program, fontTextureID, "Timer: " + to_string(state.timer) + "s", 0.7f, -0.35f, glm::vec3(1.5, -1.5, 0));
+
+		// Render player
 		state.player->Render(program);
-		// Render AI enemies
+		// Render enemies
 		for (Entity* enemy : state.enemies) {
 			enemy->Render(program);
 		}
-        // Render Player Bullets
-        for (Bullet* bullet : state.bullets){
-            bullet->Render(program);
-        }
+		// Render bullets
+		for (Bullet* bullet : state.bullets) {
+			bullet->Render(program);
+		}
 	}
+	else {
+		DrawText(program, fontTextureID, "PLANT vs ZOMBIES", 1.0f, -0.4f, glm::vec3(5, -4, 0));
+		DrawText(program, fontTextureID, menuText, 1.0f, -0.4f, glm::vec3(4, -6, 0));
+	}
+}
+
+void Scene::makePlayerBullet() {
+	state.player->shoot = false;
+
+	Bullet* tempBullet = new Bullet(LoadTexture("./src/bullet.png"));
+	tempBullet->entityType = Entity::PLAYER_BULLET;
+	tempBullet->position = state.player->position;
+	state.player->movement = -1.0f * tempBullet->setBulletMovement(state.player->shootDirection);
+	
+	state.bullets.push_back(tempBullet);
+}
+
+void Scene::makeEnemyBullet(Entity* enemy) {
+	enemy->shoot = false;
+
+	Bullet* tempBullet = new Bullet(LoadTexture("./src/bullet.png"));
+	tempBullet->entityType = Entity::ENEMY_BULLET;
+	tempBullet->position = enemy->position;
+	tempBullet->position.x += 0.5f;
+	tempBullet->setBulletMovement(enemy->shootDirection);
+	
+	state.bullets.push_back(tempBullet);
 }
 
 void Scene::resetGame() {
@@ -199,11 +224,3 @@ void Scene::resetGame() {
 Scene::Scene(unsigned int* l) : levelData(l) {}
 Scene::~Scene() { resetGame(); }
 bool Scene::IsGame() const { return isGame; }
-
-void Scene::makePlayerBullet(){
-    Bullet* tempBullet = new Bullet(LoadTexture("./src/bullet.png"));
-    tempBullet->position = state.player->position;
-    tempBullet->movement = -(state.player->movement);
-	tempBullet->entityType = Entity::PLAYER_BULLET;
-    state.bullets.push_back(tempBullet);
-}

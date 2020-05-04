@@ -12,6 +12,8 @@ public:
 	float vertices[12];
 	float width, height;
 
+	bool shoot = false;
+	int shootDirection;
 	bool isActive = true;
 	GLuint textureID;
 	glm::mat4 modelMatrix;
@@ -33,10 +35,8 @@ public:
 	bool collidedLeft = false;
 	bool collidedRight = false;
     
-    enum EntityType {PLAYER, CHASER, SHOOTER, PLAYER_BULLET, ENEMY_BULLET};
-    enum EntityState {IDLE, ACTIVE};
-    
-    EntityType entityType;
+	enum EntityType { PLAYER, CHASER, SHOOTER, PLAYER_BULLET, ENEMY_BULLET };
+	EntityType entityType;
 
 	Entity(GLuint id, float w = 1, float h = 1);
 	bool CheckCollision(const Entity* other) const;
