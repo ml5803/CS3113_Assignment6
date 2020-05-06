@@ -14,10 +14,14 @@ Enemy::Enemy(GLuint id, float w, float h) : Entity(id, w, h) {
     animTime = 0;
     animCols = 2;
     animRows = 2;
+    
+    shootDirection = 1;
+    cooldown = 500;
+    lastShotTime = 450;
 }
 
 void Enemy::AIChaser(Entity* target){
-    if (target == nullptr) return;
+    if (target == nullptr || !this->isActive) return;
     
     // movement
     if (target->position.x > position.x){
@@ -39,36 +43,53 @@ void Enemy::AIChaser(Entity* target){
     if (abs(diffX) > abs(diffY)){
         if (target->position.x > position.x){
             animIndices = animRight;
+            shootDirection = 2;
         }else{
             animIndices = animLeft;
+            shootDirection = 3;
         }
     }else{
         if (target->position.y> position.y){
             animIndices = animUp;
+            shootDirection = 0;
         }else{
             animIndices = animDown;
+            shootDirection = 1;
         }
     }
     
 }
 
 void Enemy::AIShooter(Entity* target){
-    if (target == nullptr) return;
-
+    if (target == nullptr || !this->isActive ) return;
+    
     float diffX = position.x - target->position.x;
     float diffY = position.y - target->position.y;
     
-	// if I get close enough, stop moving, start shooting
-    if (abs(diffX) < 5 || abs(diffY) < 5){ 
-        cout << "pew pew" << endl;
-		shoot = true;
+    //chase player
+    AIChaser(target);
+    
+	// if I get roughly linear shot, shoot if not on cd
+    if (lastShotTime >= cooldown){
+        if (abs(diffX) < 0.1){ //lined up vertically
+            cout << "pew pew vertical" << endl;
+            this->shoot = true;
+            lastShotTime = 0;
+        }else if (abs(diffY) < 0.1){ //lined up horizontally
+            cout << "pew pew horizontal" << endl;
+            this->shoot = true;
+            lastShotTime = 0;
+        }
+        
+    }else{
+        lastShotTime += 1;
     }
-    // movement same as CHASER
-	AIChaser(target);
+	
 }
 
 void Enemy::Update(float deltaTime, Map* map, const std::vector<Entity*> objects, Entity* target)
 {
+    
     this->movement = glm::vec3(0);
     switch (entityType){;
         case CHASER:

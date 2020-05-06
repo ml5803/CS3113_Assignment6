@@ -100,9 +100,9 @@ void Scene::Initialize(bool isGame) {
         }
         
         // Test shooter
-        /*state.enemies.push_back(new Enemy(LoadTexture("./src/enemy.png"), 1.0f, 1.0f));
-        state.enemies[0]->position = glm::vec3(5,-7.5,0);
-        state.enemies[0]->entityType = Enemy::SHOOTER;*/
+        state.enemies.push_back(new Enemy(LoadTexture("./src/enemy.png"), 1.0f, 1.0f));
+        state.enemies[4]->position = glm::vec3(5,-7.5,0);
+        state.enemies[4]->entityType = Enemy::SHOOTER;
     }
 }
 
@@ -113,21 +113,28 @@ int Scene::Update(float deltaTime) {
         state.player->Update(deltaTime, state.map);
 
         // Spawn new enemies every 5 seconds
-        std::cout << state.enemies.size() << std::endl;
+        //std::cout << state.enemies.size() << std::endl;
         time_t currTime = time(NULL);
         srand(time(NULL));
         if (currTime - state.lastWaveTime > 5){
             // Spawn randomly at spawn points
             for (size_t i = 0; i < spawnLocations.size(); i++){
                 int randProb = rand() % 10;
+                int shooterProb = rand() % 10;
                 Enemy* tempEnemy;
-                if (randProb > 6){
+                if (randProb < 6){ // 60% chance to spawn an enemy
                     tempEnemy = new Enemy(LoadTexture("./src/enemy.png"), 1.0f, 1.0f);
                     tempEnemy->position = glm::vec3(spawnLocations[i].first,spawnLocations[i].second,0);
-                    tempEnemy->entityType = Enemy::CHASER;
+                    if (shooterProb < 3){ // 30% chance to spawn a shooter
+                        std::cout << "SHOOTER SPAWNED" << std::endl;
+                        tempEnemy->entityType = Enemy::SHOOTER;
+                    }else{
+                        tempEnemy->entityType = Enemy::CHASER;
+                    }
                     state.enemies.push_back(tempEnemy);
+                    
                 }
-                std::cout << spawnLocations[i].first << "," << spawnLocations[i].second << std::endl;
+                //std::cout << spawnLocations[i].first << "," << spawnLocations[i].second << std::endl;
 
             }
             state.lastWaveTime = currTime;
@@ -196,29 +203,47 @@ void Scene::makePlayerBullet() {
 
 void Scene::makeEnemyBullet(Entity* enemy) {
 	enemy->shoot = false;
-
+    float offset = .75f;
 	Bullet* tempBullet = new Bullet(LoadTexture("./src/bullet.png"));
 	tempBullet->entityType = Entity::ENEMY_BULLET;
-	tempBullet->position = enemy->position;
-	tempBullet->position.x += 0.5f;
+    //bullet spawns a little before the enemy
+    switch(enemy->shootDirection){
+        case 0: //up
+            tempBullet->position = enemy->position + glm::vec3(0,offset,0);
+            break;
+        case 1: //down
+            tempBullet->position = enemy->position + glm::vec3(0,-offset,0);
+            break;
+        case 2: //right
+            tempBullet->position = enemy->position + glm::vec3(offset,0,0);
+            break;
+        case 3: //left
+            tempBullet->position = enemy->position + glm::vec3(offset,0,0);
+            break;
+    }
+    
+//    cout << "bullet :" << tempBullet->position.x << "," << tempBullet->position.y << "," << endl;
+//	cout << "enemy :" << enemy->position.x << "," << enemy->position.y << "," << endl;
 	tempBullet->setBulletMovement(enemy->shootDirection);
 	
 	state.bullets.push_back(tempBullet);
 }
 
 void Scene::resetGame() {
-	delete state.map;
-	delete state.player;
-	
-	for (size_t i = 0; i < state.bullets.size(); ++i) {
-		delete state.bullets[i];
-	}
-	state.bullets.clear();
+    if (state.map != nullptr && state.player != nullptr){
+        delete state.map;
+        delete state.player;
+        
+        for (size_t i = 0; i < state.bullets.size(); ++i) {
+            delete state.bullets[i];
+        }
+        state.bullets.clear();
 
-	for (size_t i = 0; i < state.enemies.size(); ++i) {
-		delete state.enemies[i];
-	}
-	state.enemies.clear();
+        for (size_t i = 0; i < state.enemies.size(); ++i) {
+            delete state.enemies[i];
+        }
+        state.enemies.clear();
+    }
 }
 
 Scene::Scene(unsigned int* l) : levelData(l) {}

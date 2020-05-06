@@ -10,8 +10,8 @@ struct GameState {
 	time_t startTime;
 	time_t lastWaveTime;
 	
-	Map* map;
-	Player* player;
+	Map* map = nullptr;
+	Player* player = nullptr;
     std::vector<Bullet*> bullets;
 	std::vector<Entity*> enemies;
 };
