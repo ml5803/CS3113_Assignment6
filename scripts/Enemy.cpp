@@ -66,7 +66,7 @@ void Enemy::AIShooter(Entity* target){
     float diffX = position.x - target->position.x;
     float diffY = position.y - target->position.y;
     
-    //chase player
+    // chase player
     AIChaser(target);
     
 	// if I get roughly linear shot, shoot if not on cd
@@ -89,7 +89,6 @@ void Enemy::AIShooter(Entity* target){
 
 void Enemy::Update(float deltaTime, Map* map, const std::vector<Entity*> objects, Entity* target)
 {
-    
     this->movement = glm::vec3(0);
     switch (entityType){;
         case CHASER:

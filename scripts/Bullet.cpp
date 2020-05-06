@@ -3,6 +3,7 @@
 
 Bullet::Bullet(GLuint id) : Entity(id, 0.4f, 0.4f) {
 	speed = 5.0f;
+	hurt = Mix_LoadWAV("./src/hurt.wav");
 }
 
 glm::vec3 Bullet::setBulletMovement(int shootDirection) {
@@ -27,18 +28,23 @@ glm::vec3 Bullet::setBulletMovement(int shootDirection) {
 }
 
 void Bullet::Update(float deltaTime, Map* map, const std::vector<Entity*> object, Entity* target){
-	if (entityType == PLAYER_BULLET) {
-		// Collide with enemies
-		for (Entity* enemy : object) {
-			if (CheckCollision(enemy)) {
+	// Collide with enemies
+	for (Entity* enemy : object) {
+		if (CheckCollision(enemy)) {
+			// Player bullet collide with an enemy, enemy dies
+			if (entityType == PLAYER_BULLET) {
+				Mix_FadeInChannel(-1, hurt, 0, 5);
 				enemy->isActive = false;
-				isActive = false;
-				return;
 			}
+			// Enemy bullet collide with an enemy, bullet disappears
+			isActive = false;
+			return;
 		}
-	} else if (entityType == ENEMY_BULLET) {
-		// Collide with player
+	}
+	if (entityType == ENEMY_BULLET) {
+		// Enemy bullet collide with player
 		if (CheckCollision(target)) {
+			Mix_FadeInChannel(-1, hurt, 0, 5);
 			target->isActive = false;
 			isActive = false;
 			return;

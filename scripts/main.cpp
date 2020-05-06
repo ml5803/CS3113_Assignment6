@@ -1,5 +1,4 @@
 #include "Scene.h"
-#include <SDL_mixer.h>
 using namespace std;
 
 unsigned int menu_data[] = {
@@ -55,12 +54,11 @@ Scene* sceneList[] =
 };
 Scene* currentScene = sceneList[0];
 
-
 void switchScene(int index) {
 	currentScene = sceneList[index];
 	if (index == 0)
 		currentScene->Initialize(false);
-	else 
+	else
 		currentScene->Initialize(true);
 }
 
@@ -93,9 +91,10 @@ void Initialize() {
 
 	currentScene->Initialize();
 
-	//Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
-	//Mix_Music* bgm = Mix_LoadMUS("./src/bgm.mp3");
-	//Mix_PlayMusic(bgm, -1);
+	// Load background music
+	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
+	Mix_Music* bgm = Mix_LoadMUS("./src/bgm.mp3");;
+	Mix_PlayMusic(bgm, -1);
 }
 
 void ProcessInput(string& menuText) {
@@ -115,7 +114,7 @@ void ProcessInput(string& menuText) {
 				}
 				break;
 			case SDLK_SPACE:
-				if (currentScene->IsGame())
+				if (currentScene->IsGame()) 
 					(currentScene->state).player->shoot = true;
 				break;
 			}
