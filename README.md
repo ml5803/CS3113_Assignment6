@@ -8,4 +8,6 @@ Requirements:
 5. Some way for the player to win (killing all the AI, collecting all the coins, whatever you want). - ok
 6. At least 1 looping background music, and at least 1 sound effect. - ok
 
-  
+Keyboard Input:
+Start the game - Enter
+Aim - Up, Down, Left, Right; Shoot - Space
