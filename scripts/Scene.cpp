@@ -103,9 +103,9 @@ void Scene::Initialize(bool isGame)
         }
         
         // Test shooter
-        state.enemies.push_back(new Enemy(LoadTexture("./src/shooter.png"), 1.0f, 1.0f));
-        state.enemies[4]->position = glm::vec3(5,-7.5,0);
-        state.enemies[4]->entityType = Enemy::SHOOTER;
+//        state.enemies.push_back(new Enemy(LoadTexture("./src/shooter.png"), 1.0f, 1.0f));
+//        state.enemies[4]->position = glm::vec3(5,-7.5,0);
+//        state.enemies[4]->entityType = Enemy::SHOOTER;
     }
 }
 
@@ -186,7 +186,7 @@ void Scene::Render(ShaderProgram* program, const string& menuText)
 		}
 	}
 	else {
-		DrawText(program, fontTextureID, "BUDGET PEAHEAD", 1.0f, -0.4f, glm::vec3(5.7, -4, 0));
+        DrawText(program, fontTextureID, "PEAHEAD", 1.0f, -0.4f, glm::vec3(7.5, -4, 0));
 		DrawText(program, fontTextureID, menuText, 1.0f, -0.4f, glm::vec3(4, -6, 0));
 	}
 }
